@@ -1,11 +1,16 @@
+# coding=utf-8
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from datetime import datetime, date, timedelta
 
-products = pd.read_csv('datasets/fairMarket-products.csv')
+shops = pd.read_csv('datasets/fairMarket-shops.csv')
 
-print products.tail(1)
+print shops.tail(1)
 
 #generate the full set of days from the first date to the last in the dataset
 months = []
@@ -19,12 +24,12 @@ for i in range(delta.days+1):
     dayDatetime = datetime.strptime(dayString, '%d/%m/%y')
     days.append(dayDatetime)
 
-#add the dates of products creation to the days array
-for productDate in products['Creado en']:
-    if isinstance(productDate, basestring):
-        productDay = str.split(productDate)[0]
-        productDayDatetime = datetime.strptime(productDay, '%d/%m/%y')
-        days.append(productDayDatetime)
+#add the dates of shops creation to the days array
+for shopDate in shops['Created on']:
+    if isinstance(shopDate, basestring):
+        shopDay = str.split(shopDate)[0]
+        shopDayDatetime = datetime.strptime(shopDay, '%d/%m/%y')
+        days.append(shopDayDatetime)
 
 #count days frequency in days array
 unique, counts = np.unique(days, return_counts=True)
@@ -33,7 +38,7 @@ realCounts = []
 for count in counts:
     realCounts.append(count-1)
 
-#count the total acumulation of products created in each days
+#count the total acumulation of shops created in each days
 totalCount = 0
 globalCount = []
 for k in realCounts:
@@ -44,16 +49,16 @@ dates = countDays.values()
 counts = countDays.values()
 
 #plot the data
-plt.title("New products published each day")
+plt.title("New shops opened each day")
 plt.plot(unique, realCounts)
 plt.show()
 
-plt.title("Total products in FairMarket each day")
+plt.title("Total shops each day")
 plt.plot(unique, globalCount)
 plt.show()
 
-plt.title("New products and total products each day")
-plt.plot(unique, realCounts, label="new products offered each day")
-plt.plot(unique, globalCount, label="total products in FairMarket each day")
+plt.title("New shops and total shops each day")
+plt.plot(unique, realCounts, label="new shops opened each day")
+plt.plot(unique, globalCount, label="total shops each day")
 plt.legend(loc='upper left')
 plt.show()
